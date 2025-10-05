@@ -1,0 +1,10 @@
+# Include V2 model files
+include model/v2/*.pkl
+include model/v2/*.pth
+
+# Include V1 model files (for backward compatibility)
+include exso_sdk/model_data/exoplanet_model.pth
+
+# Include package data
+recursive-include exso_sdk/model_data *
+recursive-include exso_sdk *.py

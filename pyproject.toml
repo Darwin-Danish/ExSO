@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "exso-sdk"
+version = "2.1.11"
+description = "Exoplanet candidate classification SDK V2 with stacking ensemble model (LightGBM + XGBoost + CatBoost)"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [{ name = "Darwin Danish", email = "lumina.ai.devs@gmail.com" }]
+license = "MIT"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Scientific/Engineering :: Astronomy",
+  "Operating System :: OS Independent"
+]
+dependencies = [
+  "numpy==1.24.3",
+  "pandas==2.0.3",
+  "scikit-learn>=1.0.0",
+  "lightgbm>=3.3.0",
+  "xgboost>=1.6.0",
+  "catboost>=1.0.0",
+  "joblib>=1.1.0",
+  "flask==2.3.3",
+  "flask-cors==4.0.0",
+  "openpyxl==3.1.2",
+  "werkzeug==2.3.7",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=6.0",
+  "pytest-cov>=2.0",
+  "black>=21.0",
+  "flake8>=3.8",
+  "mypy>=0.800",
+]
+docs = [
+  "sphinx>=4.0",
+  "sphinx-rtd-theme>=0.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourname/exso-sdk"
+Repository = "https://github.com/yourname/exso-sdk"
+Documentation = "https://exso-sdk.readthedocs.io"
+"Bug Tracker" = "https://github.com/yourname/exso-sdk/issues"
+
+[project.scripts]
+
+[tool.setuptools]
+packages = ["exso_sdk", "exso_sdk.model_data", "exso_sdk.model_data.v2"]
+
+[tool.setuptools.package-data]
+"exso_sdk" = [
+  "model_data/*.pth",
+  "model_data/*.pkl",
+  "model_data/*/*.pth",
+  "model_data/*/*.pkl",
+]
+
+[tool.uv.workspace]
+members = [
+    "web",
+]
+

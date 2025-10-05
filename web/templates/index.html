@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exo-Operator - Exoplanet Classification Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-globe-americas"></i>
+                        <span>Exo-Operator</span>
+                    </div>
+                    <nav class="nav">
+                        <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                            <i class="fas fa-chart-line"></i> Dashboard
+                        </a>
+                        <a href="#predict" class="nav-link" data-section="predict">
+                            <i class="fas fa-brain"></i> Predict
+                        </a>
+                        <a href="#analyze" class="nav-link" data-section="analyze">
+                            <i class="fas fa-microscope"></i> Analyze
+                        </a>
+                        <a href="#train" class="nav-link" data-section="train">
+                            <i class="fas fa-cogs"></i> Train
+                        </a>
+                    </nav>
+                    <div class="mode-toggle">
+                        <button id="modeToggle" class="mode-btn">
+                            <span class="mode-text">Simple</span>
+                            <i class="fas fa-toggle-off"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="section active">
+                    <div class="section-header">
+                        <h1>Model Dashboard</h1>
+                        <p>Overview of your exoplanet classification model performance</p>
+                    </div>
+                    
+                    <div class="dashboard-grid">
+                        <!-- Model Status Card -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-robot"></i> Model Status</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="status-indicator" id="modelStatus">
+                                    <div class="status-dot loading"></div>
+                                    <span>Loading...</span>
+                                </div>
+                                <div class="model-info" id="modelInfo" style="display: none;">
+                                    <p><strong>Version:</strong> <span id="modelVersion">-</span></p>
+                                    <p><strong>Type:</strong> <span id="modelType">-</span></p>
+                                    <p><strong>Features:</strong> <span id="modelFeatures">-</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accuracy Metrics -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-chart-bar"></i> Accuracy Metrics</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="metrics-grid">
+                                    <div class="metric">
+                                        <div class="metric-value" id="overallAccuracy">-</div>
+                                        <div class="metric-label">Overall Accuracy</div>
+                                    </div>
+                                    <div class="metric">
+                                        <div class="metric-value" id="precision">-</div>
+                                        <div class="metric-label">Precision</div>
+                                    </div>
+                                    <div class="metric">
+                                        <div class="metric-value" id="recall">-</div>
+                                        <div class="metric-label">Recall</div>
+                                    </div>
+                                    <div class="metric">
+                                        <div class="metric-value" id="f1Score">-</div>
+                                        <div class="metric-label">F1 Score</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feature Importance -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-star"></i> Top Features</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="feature-list" id="featureList">
+                                    <div class="loading-spinner">Loading features...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="action-buttons">
+                                    <button class="btn btn-primary" onclick="switchSection('predict')">
+                                        <i class="fas fa-brain"></i> Make Prediction
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="switchSection('analyze')">
+                                        <i class="fas fa-upload"></i> Upload Data
+                                    </button>
+                                    <button class="btn btn-outline" onclick="switchSection('train')">
+                                        <i class="fas fa-cogs"></i> Train Model
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Predict Section -->
+                <section id="predict" class="section">
+                    <div class="section-header">
+                        <h1>Exoplanet Prediction</h1>
+                        <p>Classify exoplanet candidates using our advanced ML model</p>
+                    </div>
+
+                    <div class="predict-container">
+                        <!-- Simple Mode -->
+                        <div id="simplePredict" class="predict-mode">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3><i class="fas fa-magic"></i> Simple Prediction</h3>
+                                    <p>Enter basic exoplanet parameters for quick classification</p>
+                                </div>
+                                <div class="card-content">
+                                    <form id="simplePredictForm" class="predict-form">
+                                        <div class="form-grid">
+                                            <div class="form-group">
+                                                <label for="koi_period">Orbital Period (days)</label>
+                                                <input type="number" id="koi_period" name="koi_period" step="0.001" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="koi_depth">Transit Depth (ppm)</label>
+                                                <input type="number" id="koi_depth" name="koi_depth" step="0.1" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="koi_prad">Planet Radius (Earth radii)</label>
+                                                <input type="number" id="koi_prad" name="koi_prad" step="0.1" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="koi_sma">Semi-major Axis (AU)</label>
+                                                <input type="number" id="koi_sma" name="koi_sma" step="0.001" required>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-large">
+                                            <i class="fas fa-brain"></i> Classify Exoplanet
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pro Mode -->
+                        <div id="proPredict" class="predict-mode" style="display: none;">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3><i class="fas fa-microscope"></i> Advanced Prediction</h3>
+                                    <p>Enter all parameters for precise classification</p>
+                                </div>
+                                <div class="card-content">
+                                    <form id="proPredictForm" class="predict-form">
+                                        <div class="form-grid">
+                                            <div class="form-group">
+                                                <label for="pro_koi_period">Orbital Period (days)</label>
+                                                <input type="number" id="pro_koi_period" name="koi_period" step="0.001" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pro_koi_depth">Transit Depth (ppm)</label>
+                                                <input type="number" id="pro_koi_depth" name="koi_depth" step="0.1" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pro_koi_prad">Planet Radius (Earth radii)</label>
+                                                <input type="number" id="pro_koi_prad" name="koi_prad" step="0.1" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pro_koi_sma">Semi-major Axis (AU)</label>
+                                                <input type="number" id="pro_koi_sma" name="koi_sma" step="0.001" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pro_koi_teq">Equilibrium Temperature (K)</label>
+                                                <input type="number" id="pro_koi_teq" name="koi_teq" step="0.1" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pro_koi_insol">Insolation Flux (Earth units)</label>
+                                                <input type="number" id="pro_koi_insol" name="koi_insol" step="0.001" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pro_koi_model_snr">Model SNR</label>
+                                                <input type="number" id="pro_koi_model_snr" name="koi_model_snr" step="0.1" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pro_koi_time0bk">Transit Epoch (BKJD)</label>
+                                                <input type="number" id="pro_koi_time0bk" name="koi_time0bk" step="0.001" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pro_koi_duration">Transit Duration (hours)</label>
+                                                <input type="number" id="pro_koi_duration" name="koi_duration" step="0.001" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pro_koi_incl">Inclination (degrees)</label>
+                                                <input type="number" id="pro_koi_incl" name="koi_incl" step="0.1" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pro_koi_srho">Stellar Density (g/cm³)</label>
+                                                <input type="number" id="pro_koi_srho" name="koi_srho" step="0.001" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pro_koi_srad">Stellar Radius (Solar radii)</label>
+                                                <input type="number" id="pro_koi_srad" name="koi_srad" step="0.001" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pro_koi_smass">Stellar Mass (Solar masses)</label>
+                                                <input type="number" id="pro_koi_smass" name="koi_smass" step="0.001" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pro_koi_steff">Stellar Effective Temperature (K)</label>
+                                                <input type="number" id="pro_koi_steff" name="koi_steff" step="1" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pro_koi_slogg">Stellar Surface Gravity (log g)</label>
+                                                <input type="number" id="pro_koi_slogg" name="koi_slogg" step="0.001" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pro_koi_smet">Stellar Metallicity (dex)</label>
+                                                <input type="number" id="pro_koi_smet" name="koi_smet" step="0.001" required>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-large">
+                                            <i class="fas fa-brain"></i> Classify Exoplanet
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Results -->
+                        <div id="predictionResults" class="results-container" style="display: none;">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3><i class="fas fa-chart-pie"></i> Prediction Results</h3>
+                                </div>
+                                <div class="card-content">
+                                    <div class="result-content" id="resultContent">
+                                        <!-- Results will be populated here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Analyze Section -->
+                <section id="analyze" class="section">
+                    <div class="section-header">
+                        <h1>Data Analysis</h1>
+                        <p>Upload and analyze exoplanet datasets</p>
+                    </div>
+
+                    <div class="analyze-container">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-upload"></i> Upload Dataset</h3>
+                                <p>Upload CSV, Excel, or JSON files for batch analysis</p>
+                            </div>
+                            <div class="card-content">
+                                <div class="upload-area" id="uploadArea">
+                                    <div class="upload-content">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <h4>Drop files here or click to browse</h4>
+                                        <p>Supports CSV, Excel (.xlsx), and JSON formats</p>
+                                        <input type="file" id="fileInput" accept=".csv,.xlsx,.json" style="display: none;">
+                                        <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                                            Choose File
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div id="filePreview" class="file-preview" style="display: none;">
+                                    <div class="preview-header">
+                                        <h4>File Preview</h4>
+                                        <button class="btn btn-outline" onclick="clearFile()">Clear</button>
+                                    </div>
+                                    <div class="preview-content">
+                                        <div id="fileSummary"></div>
+                                        <div id="fileData"></div>
+                                    </div>
+                                    <div class="preview-actions">
+                                        <button class="btn btn-primary" onclick="analyzeFile()">
+                                            <i class="fas fa-brain"></i> Analyze Dataset
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="analysisResults" class="analysis-results" style="display: none;">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3><i class="fas fa-chart-line"></i> Analysis Results</h3>
+                                </div>
+                                <div class="card-content">
+                                    <div id="analysisContent">
+                                        <!-- Analysis results will be populated here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Train Section -->
+                <section id="train" class="section">
+                    <div class="section-header">
+                        <h1>Model Training</h1>
+                        <p>Train and fine-tune your exoplanet classification model</p>
+                    </div>
+
+                    <div class="train-container">
+                        <!-- Simple Mode Training -->
+                        <div id="simpleTrain" class="train-mode">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3><i class="fas fa-magic"></i> Simple Training</h3>
+                                    <p>Upload your data and let the system automatically train the model</p>
+                                </div>
+                                <div class="card-content">
+                                    <div class="upload-area" id="trainUploadArea">
+                                        <div class="upload-content">
+                                            <i class="fas fa-database"></i>
+                                            <h4>Upload Training Data</h4>
+                                            <p>Provide labeled exoplanet data for model training</p>
+                                            <input type="file" id="trainFileInput" accept=".csv,.xlsx,.json" style="display: none;">
+                                            <button class="btn btn-primary" onclick="document.getElementById('trainFileInput').click()">
+                                                Choose Training File
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="trainPreview" class="train-preview" style="display: none;">
+                                        <div class="preview-header">
+                                            <h4>Training Data Preview</h4>
+                                        </div>
+                                        <div class="preview-content">
+                                            <div id="trainSummary"></div>
+                                        </div>
+                                        <div class="preview-actions">
+                                            <button class="btn btn-primary btn-large" onclick="startSimpleTraining()">
+                                                <i class="fas fa-play"></i> Start Training
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pro Mode Training -->
+                        <div id="proTrain" class="train-mode" style="display: none;">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3><i class="fas fa-cogs"></i> Advanced Training</h3>
+                                    <p>Fine-tune hyperparameters and advanced training options</p>
+                                </div>
+                                <div class="card-content">
+                                    <div class="train-form">
+                                        <div class="form-section">
+                                            <h4>Training Data</h4>
+                                            <div class="upload-area" id="proTrainUploadArea">
+                                                <div class="upload-content">
+                                                    <i class="fas fa-database"></i>
+                                                    <h4>Upload Training Data</h4>
+                                                    <input type="file" id="proTrainFileInput" accept=".csv,.xlsx,.json" style="display: none;">
+                                                    <button class="btn btn-primary" onclick="document.getElementById('proTrainFileInput').click()">
+                                                        Choose Training File
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-section">
+                                            <h4>Hyperparameters</h4>
+                                            <div class="hyperparams-grid">
+                                                <div class="hyperparam-group">
+                                                    <h5>LightGBM</h5>
+                                                    <div class="form-group">
+                                                        <label>N Estimators</label>
+                                                        <input type="number" id="lgb_n_estimators" value="100" min="10" max="1000">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Max Depth</label>
+                                                        <input type="number" id="lgb_max_depth" value="6" min="1" max="20">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Learning Rate</label>
+                                                        <input type="number" id="lgb_learning_rate" value="0.1" step="0.01" min="0.01" max="1">
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="hyperparam-group">
+                                                    <h5>XGBoost</h5>
+                                                    <div class="form-group">
+                                                        <label>N Estimators</label>
+                                                        <input type="number" id="xgb_n_estimators" value="100" min="10" max="1000">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Max Depth</label>
+                                                        <input type="number" id="xgb_max_depth" value="6" min="1" max="20">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Learning Rate</label>
+                                                        <input type="number" id="xgb_learning_rate" value="0.1" step="0.01" min="0.01" max="1">
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="hyperparam-group">
+                                                    <h5>CatBoost</h5>
+                                                    <div class="form-group">
+                                                        <label>Iterations</label>
+                                                        <input type="number" id="cat_iterations" value="100" min="10" max="1000">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Depth</label>
+                                                        <input type="number" id="cat_depth" value="6" min="1" max="20">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Learning Rate</label>
+                                                        <input type="number" id="cat_learning_rate" value="0.1" step="0.01" min="0.01" max="1">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-actions">
+                                            <button class="btn btn-primary btn-large" onclick="startProTraining()">
+                                                <i class="fas fa-play"></i> Start Advanced Training
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="trainingProgress" class="training-progress" style="display: none;">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3><i class="fas fa-spinner fa-spin"></i> Training in Progress</h3>
+                                </div>
+                                <div class="card-content">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="progressFill"></div>
+                                    </div>
+                                    <div class="progress-text" id="progressText">Initializing training...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-left">
+                        <p>&copy; 2024 Exo-Operator. Advanced exoplanet classification platform.</p>
+                    </div>
+                    <div class="footer-right">
+                        <a href="#" class="footer-link">Documentation</a>
+                        <a href="#" class="footer-link">API Reference</a>
+                        <a href="#" class="footer-link">Support</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p id="loadingText">Processing...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
