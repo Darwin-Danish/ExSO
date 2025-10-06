@@ -6,7 +6,7 @@
 [![Downloads](https://img.shields.io/badge/downloads-10k%2B-brightgreen.svg)](https://pypi.org/project/exso-sdk/)
 
 [![PyPI](https://img.shields.io/pypi/v/exso-sdk?style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/exso-sdk/)
-[![Website](https://img.shields.io/badge/🌐_Live_Demo-Exo_Operator-blue?style=for-the-badge&logo=flask&logoColor=white)](http://3.106.252.130:2429/)
+[![Website](https://img.shields.io/badge/🌐_Live_Demo-Exo_Operator-blue?style=for-the-badge&logo=flask&logoColor=white)](ec2-3-106-252-130.ap-southeast-2.compute.amazonaws.com:2429)
 [![Install](https://img.shields.io/badge/📦_Install-pip_install_exso--sdk-green?style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/exso-sdk/)
 [![GitHub](https://img.shields.io/badge/GitHub-View_Source-black?style=for-the-badge&logo=github&logoColor=white)](https://github.com/yourname/exso-sdk)
 
